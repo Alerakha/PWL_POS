@@ -25,18 +25,28 @@ class UserController extends Controller
     //     DB::delete('delete m_level where level_kode = ?', ['Cus']);
     // }
 
+    // Praktikum 1
+    // public function index()
+    // {
+    //     $data = [
+    //         'level_id' => 2,
+    //         'username' => 'manager_tiga',
+    //         'nama' => 'Manager 3',
+    //         'password' => Hash::make('12345')
+    //     ];
+    //     // Error karena tidak diberikan tempat pada $fillable untuk memasukkan password, dan tidak ada password default unutk mengisi
+    //     UserModel::create($data);
+
+    //     $user = UserModel::all();
+    //     return view('user', ['data' => $user]);
+    // }
+
+    // praktikum 2
     public function index()
     {
-        $data = [
-            'level_id' => 2,
-            'username' => 'manager_tiga',
-            'nama' => 'Manager 3',
-            'password' => Hash::make('12345')
-        ];
-        // Error karena tidak diberikan tempat pada $fillable untuk memasukkan password, dan tidak ada password default unutk mengisi
-        UserModel::create($data);
-
-        $user = UserModel::all();
+        $user = UserModel::findOr(20, ['username', 'nama'], function () {
+            abort(404);
+        });
         return view('user', ['data' => $user]);
     }
 }
