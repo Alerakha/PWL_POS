@@ -28,9 +28,13 @@ class UserController extends Controller
     public function index()
     {
         $data = [
-            'nama' => 'Pelanggan Pertama',
+            'level_id' => 2,
+            'username' => 'manager_tiga',
+            'nama' => 'Manager 3',
+            'password' => Hash::make('12345')
         ];
-        UserModel::where('username', 'customer-1')->update($data);
+        // Error karena tidak diberikan tempat pada $fillable untuk memasukkan password, dan tidak ada password default unutk mengisi
+        UserModel::create($data);
 
         $user = UserModel::all();
         return view('user', ['data' => $user]);
