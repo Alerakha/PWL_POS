@@ -4,6 +4,7 @@ use App\Http\Controllers\KategoriController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\POSController;
 use App\Models\UserModel;
 
 /*
@@ -18,7 +19,7 @@ use App\Models\UserModel;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome2');
 });
 Route::get('/level', [LevelController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'index']);
@@ -31,3 +32,4 @@ Route::get('/user/hapus/{id}', [UserController::class, 'ubah']);
 Route::get('/kategori', [KategoriController::class, 'index']);
 Route::get('/kategori/create', [KategoriController::class, 'create']);
 Route::post('/kategori', [KategoriController::class, 'store']);
+Route::resource('m_user', POSController::class);
