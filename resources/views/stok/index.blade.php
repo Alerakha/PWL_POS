@@ -5,7 +5,7 @@
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
         <div class="card-tools">
-            <a class="btn btn-sm btn-primary mt-1" href="{{ url('kategori/create') }}">Tambah</a>
+            <a class="btn btn-sm btn-primary mt-1" href="{{ url('stok/create') }}">Tambah Stok</a>
         </div>
     </div>
     <div class="card-body">
@@ -15,28 +15,14 @@
         @if (session('error'))
             <div class="alert alert-danger">{{ session('error')}}</div>
         @endif
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group row">
-                    <label class="col-1 control-label col-form-label">Filter:</label>
-                    <div class="col-3">
-                        <select name="level_id" id="level_id" class="form-control" required>
-                            <option value="">- Semua -</option>
-                            @foreach($kategori as $item)
-                            <option value="{{$item->kategori_id}}">{{$item->kategori_nama}}</option>
-                            @endforeach
-                        </select>
-                        <small class="form-text text-muted">Kategori</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <table class="table table-bordered table-striped table-hover table-sm" id="table_kategori">
+        <table class="table table-bordered table-striped table-hover table-sm" id="table_stok">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Kode</th>
-                    <th>Nama Kategori</th>
+                    <th>Nama Barang</th>
+                    <th>Jumlah Stok</th>
+                    <th>User</th>
+                    <th>Tanggal Stok</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -51,14 +37,14 @@
 @push('js')
 <script>
     $(document).ready(function() {
-        var dataLevel = $('#table_kategori').DataTable({
+        var dataStok = $('#table_stok').DataTable({
             serverSide: true,
             ajax: {
-                "url": "{{ url('kategori/list') }}",
+                "url": "{{ url('stok/list') }}",
                 "dataType": "json",
                 "type": "POST",
                 "data": function(d){
-                    d.kategori_id = $('#kategori_id').val();
+                    d.barang_id = $('#barang_id').val();
                 }
             },
             columns: [
@@ -69,15 +55,27 @@
                     searchable: false
                 },
                 {
-                    data: "kategori_kode",
+                    data: "barang.barang_nama", 
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "stok_jumlah",
+                    className: "",
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: "user.nama",
                     className: "",
                     orderable: false,
                     searchable: true
                 },
                 {
-                    data: "kategori_nama",
+                    data: "stok_tanggal", 
                     className: "",
-                    orderable: false,
+                    orderable: true,
                     searchable: true
                 },
                 {
@@ -89,8 +87,8 @@
             ]
         });
 
-        $('#kategori_id').on('change', function(){
-            dataLevel.ajax.reload(); // Mengubah dari dataUser menjadi dataLevel
+        $('#barang_id').on('change', function(){
+            dataStok.ajax.reload();
         });
     });
 </script>
