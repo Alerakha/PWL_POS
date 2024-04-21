@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
@@ -76,4 +79,24 @@ Route::group(['prefix' => 'penjualan'], function () {
     Route::get('/{id}/edit', [PenjualanController::class, 'edit']);
     Route::post('/{id}', [PenjualanController::class, 'update']);
     Route::delete('/{id}', [PenjualanController::class, 'destroy']);
+});
+
+// Jobsheet 9
+Route::get('login', [AuthController::class, 'index'])->name('login');
+Route::get('register', [AuthController::class, 'register'])->name('register');
+Route::post('proses_login', [AuthController::class, 'proses_login'])->name('proses_login');
+Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('proses_register', [AuthController::class, 'proses_register'])->name('proses_register');
+
+// atur middleware menggunakna group pada routing
+// didalamnya terdapat group untuk cek kondisi login
+// user yang login merupakan admin mak aan diarahkan ke admin controller
+// jika user yang login merupakan manager maka akan diarahkan menuju UserController
+Route::group(['middleware' => ['auth']], function () {
+    Route::group(['middleware' => ['cek_login:1']], function () {
+        Route::resource('admin', AdminController::class);
+    });
+    Route::group(['middleware' => ['cek_login:2']], function () {
+        Route::resource('admin', ManagerController::class);
+    });
 });
