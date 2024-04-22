@@ -93,10 +93,11 @@ Route::post('proses_register', [AuthController::class, 'proses_register'])->name
 // user yang login merupakan admin mak aan diarahkan ke admin controller
 // jika user yang login merupakan manager maka akan diarahkan menuju UserController
 Route::group(['middleware' => ['auth']], function () {
+    
     Route::group(['middleware' => ['cek_login:1']], function () {
         Route::resource('admin', AdminController::class);
     });
     Route::group(['middleware' => ['cek_login:2']], function () {
-        Route::resource('admin', ManagerController::class);
+        Route::resource('manager', ManagerController::class);
     });
 });

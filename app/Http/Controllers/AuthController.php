@@ -6,30 +6,33 @@ use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\validator;
-
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
     public function index()
     {
-        // ambil data user lalu simpan ke variabel user
+        // kita ambil data user lalu simpan pada variable $user
         $user = Auth::user();
 
+        // kondisi jika user nya ada
         if ($user) {
+            // jika user nya memiliki level admin
             if ($user->level_id == '1') {
                 return redirect()->intended('admin');
-            } else if ($user->level == '2') {
+            }
+            // jika user nya memiliki level manager
+            else if ($user->level_id == '2') {
                 return redirect()->intended('manager');
             }
         }
         return view('login');
     }
-
+    // 
     public function proses_login(Request $request)
     {
-        // membuat validasi saat login
-        // validasi username dan password
+        // kita buat validasi pada saat tombol login di klik
+        // validasi nya username & password wajib diisi
         $request->validate([
             'username' => 'required',
             'password' => 'required'
@@ -37,62 +40,74 @@ class AuthController extends Controller
 
         // ambil data request username & password saja
         $credential = $request->only('username', 'password');
-        // cek data username
+        // cek jika data username dan password valid (sesuai) dengan data
         if (Auth::attempt($credential)) {
-            // kalau berhasil simpan data user di variabel user
+            // kalau berhasil simpan data user nya di variabel $user
             $user = Auth::user();
 
-            // cek hika level user admin maka akan diarahan ke halaman admin
+            // cek lagi jika level user admin maka arahkan ke halaman admin
             if ($user->level_id == '1') {
+                //dd($user->level_id);
                 return redirect()->intended('admin');
             }
-            // tai jika level usernya biasa maka akn diarahkan ke halaman user
+            // tapi jika level user nya biasa maka arahkan ke halaman user
             else if ($user->level_id == '2') {
-                return redirect()->intended('admin');
+                return redirect()->intended('manager');
             }
             // jika belum ada role maka ke halaman /
             return redirect()->intended('/');
         }
         // jika ga ada data user yang valid maka kembalikan lagi ke halaman login
-        // pastikan kirim pesan error juga jika login gagal
+        // pastikan kirim pesan error juga kalau login gagal ya
         return redirect('login')
             ->withInput()
             ->withErrors(['login_gagal' => 'Pastikan kembali username dan password yang dimasukkan sudah benar']);
     }
-
+    // 
     public function register()
     {
         // tampilkan view register
         return view('register');
     }
 
-    // aksi form register
+    // akses form register
     public function proses_register(Request $request)
     {
-        // kita buat validasi untuk proses register
+        // kita buat validasi nih buat proses register
+        // validasinya yaitu semua field wajib di isi
+        // validasi username itu harus unique atau tidak boleh duplicate username ya
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
             'username' => 'required|unique:m_user',
+            'level_id' => 'required|in:1,2',
             'password' => 'required'
         ]);
+
         // kalau gagal kembali ke halaman register dengan memunculkan pesan error
         if ($validator->fails()) {
-            return redirect('/redirect')
+            return redirect('/register')
                 ->withErrors($validator)
                 ->withInput();
         }
-        // kalau berhasil isi level & hash passwordnya agar secure
-        $request['level_id'] = '2';
+        // kalau berhasil isi level & hasil hash passwordnya ya biar secure
+        // $request['level_id'] = '2';
         $request['password'] = Hash::make($request->password);
 
+        // masukkan semua data pada request ke table user
         UserModel::create($request->all());
+
+        // kalo berhasil arahkan ke halaman login
         return redirect()->route('login');
     }
 
     public function logout(Request $request)
     {
+        // logout itu harus menghapus session nya
         $request->session()->flush();
+
+        // jalankan juga fungsi logout pada auth
         Auth::logout();
-        return Redirect('login');
+        // kembali kan ke halaman login
+        return redirect('login');
     }
 }

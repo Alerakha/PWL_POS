@@ -66,6 +66,14 @@
                 </span>
             @enderror
         </div>
+        
+        {{-- Level ID Field --}}
+        <div class="input-group mb-3">
+            <select name="level_id" class="form-control">
+                <option value="1">Admin</option>
+                <option value="2">Manager</option>
+            </select>
+        </div>
 
         {{-- {{Register Button}} --}}
         <button type="submit" class="btn btn-block {{config('adminlte.classes_auth_btn', 'btn-flat btn-primary')}}">
