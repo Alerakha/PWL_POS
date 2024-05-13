@@ -62,7 +62,7 @@ class StokController extends Controller
         $activeMenu = 'barang';
         $activeMenu2 = 'user';
 
-        return view('stok.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'barang' => $barang, 'activeMenu' => $activeMenu, 'activeMenu2' => $activeMenu2]);
+        return view('stok.create', ['breadcrumb' => $breadcrumb, 'user' => $user, 'page' => $page, 'barang' => $barang, 'activeMenu' => $activeMenu, 'activeMenu2' => $activeMenu2]);
     }
     public function store(Request $request)
     {
